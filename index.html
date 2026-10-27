@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WATCH EARN</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#10111d;color:white;font-family:Arial,sans-serif;padding:16px 16px 85px}
+header{text-align:center;padding:20px 0}
+.logo{font-size:42px;color:#b18cff}
+h1{margin:5px;color:#d5baff;letter-spacing:2px}
+p{color:#b7b8cb}
+.card{background:#1c1e30;border:1px solid #343650;border-radius:16px;padding:16px;margin:14px 0}
+button{background:#8957f5;color:white;border:0;border-radius:10px;padding:12px;font-weight:bold;cursor:pointer}
+input{width:100%;padding:13px;border-radius:10px;border:1px solid #444765;background:#10111d;color:white;margin:8px 0}
+nav{position:fixed;bottom:0;left:0;right:0;background:#191a29;display:flex;justify-content:space-around;padding:12px 2px}
+nav button{background:transparent;padding:8px 5px;font-size:12px}
+.video{background:#292345;border-radius:12px;text-align:center;padding:32px;font-size:45px}
+.small{font-size:12px;color:#b7b8cb}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">▶️ 💎</div>
+<h1>WATCH EARN</h1>
+<p>Watch • Discover • Creator Hub</p>
+</header>
+
+<section id="home">
+<h2>🔥 For You</h2>
+<input id="search" placeholder="Search videos..." oninput="findVideos()">
+<div id="videos"></div>
+</section>
+
+<section id="searchPage" hidden>
+<h2>🔎 Search</h2>
+<p>Find videos and creators.</p>
+<input placeholder="Search coming soon">
+</section>
+
+<section id="earners" hidden>
+<h2>🏆 Top Earners</h2>
+<div class="card"><b>🥇 Creator One</b><p class="small">Demo profile — no real earnings</p></div>
+<div class="card"><b>🥈 Creator Two</b><p class="small">Demo profile — no real earnings</p></div>
+</section>
+
+<section id="profile" hidden>
+<h2>👤 My Profile</h2>
+<div class="card">
+<b id="username">Telegram User</b>
+<p id="userid">Open inside Telegram to identify your Telegram account.</p>
+</div>
+<div class="card">
+<h3>🎬 Creator Panel Preview</h3>
+<p class="small">Real uploads require a secure backend and video storage.</p>
+<input id="title" placeholder="Video title">
+<input id="url" placeholder="Public video URL (optional)">
+<button onclick="addVideo()">Add demo video</button>
+</div>
+<div class="card">
+<h3>👑 Revenue split plan</h3>
+<p>Owner: 60% • Admin: 40%</p>
+<p class="small">Actual earnings and payouts will be added after backend setup.</p>
+</div>
+</section>
+
+<nav>
+<button onclick="show('home')">🏠<br>Home</button>
+<button onclick="show('searchPage')">🔎<br>Search</button>
+<button onclick="show('earners')">🏆<br>Earners</button>
+<button onclick="show('profile')">👤<br>Profile</button>
+</nav>
+
+<script>
+const tg=window.Telegram?.WebApp;
+if(tg){tg.ready();tg.expand();}
+let data=[
+{title:"Nepal Travel Highlights 🇳🇵",views:12450},
+{title:"Funny Moments 😂",views:9820},
+{title:"Amazing Nature 🌄",views:7430}
+];
+function render(){
+let q=document.getElementById("search").value.toLowerCase();
+document.getElementById("videos").innerHTML=data
+.filter(v=>v.title.toLowerCase().includes(q))
+.sort((a,b)=>b.views-a.views)
+.map(v=>`<div class="card">
+<div class="video">▶️</div>
+<h3>${v.title}</h3>
+<p class="small">◉ ${v.views.toLocaleString()} views</p>
+<button onclick="watch('${v.title.replace(/'/g,"")}')">▶ Watch</button>
+<button onclick="share('${v.title.replace(/'/g,"")}')">↗ Share</button>
+</div>`).join("");
+}
+function findVideos(){render();}
+function watch(title){alert("Preview only: add video hosting to play "+title);}
+function share(title){
+let link="https://t.me/share/url?text="+encodeURIComponent(title);
+if(tg)tg.openTelegramLink(link);else window.open(link,"_blank");
+}
+function addVideo(){
+let title=document.getElementById("title").value.trim();
+if(!title){alert("Please enter a video title");return;}
+data.unshift({title,views:0});
+document.getElementById("title").value="";
+render();show("home");alert("Added to this demo only. It is not saved online.");
+}
+function show(id){
+["home","searchPage","earners","profile"].forEach(x=>document.getElementById(x).hidden=x!==id);
+if(id==="profile"){
+let u=tg?.initDataUnsafe?.user;
+if(u){document.getElementById("username").textContent=(u.first_name||"User")+" "+(u.last_name||"");document.getElementById("userid").textContent="Telegram ID: "+u.id;}
+}
+window.scrollTo(0,0);
+}
+render();
+</script>
+</body>
+  </html>
+  
